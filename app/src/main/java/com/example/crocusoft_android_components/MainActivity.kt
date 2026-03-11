@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.crocusoft_android_components.presentation.home.HomeView
 import com.example.crocusoft_android_components.ui.theme.Crocusoft_android_componentsTheme
+import com.example.crocusoft_android_components.ui.theme.Primary
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,7 +24,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    containerColor = Primary,) { innerPadding ->
                     HomeView(
                         innerPaddingValues = innerPadding,
                         onNavigateSecondActivity = {

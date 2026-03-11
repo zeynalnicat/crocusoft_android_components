@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.crocusoft_android_components"
-        minSdk = 24
+        minSdk = 27
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -81,6 +81,9 @@ dependencies {
 
 
     implementation(libs.androidx.navigation.compose)
+
+    // Lottie
+    implementation(libs.lottie.compose)
 
 }
 

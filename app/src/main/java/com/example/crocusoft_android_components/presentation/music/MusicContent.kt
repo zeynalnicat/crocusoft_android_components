@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.drawable.Icon
 import android.os.IBinder
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.StopCircle
@@ -38,6 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.crocusoft_android_components.R
 import com.example.crocusoft_android_components.service.MusicService
 import kotlinx.coroutines.delay
 
@@ -48,11 +58,21 @@ fun MusicContent(
     innerPaddingValues: PaddingValues,
 ) {
 
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.wave_animation))
+
+    val progressAnimation by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
     val context = LocalContext.current
 
     var musicService by remember { mutableStateOf<MusicService?>(null) }
     var isBound by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0f) }
+    var isPlaying by remember { mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
 
     val connection = remember {
         object : ServiceConnection {
@@ -112,57 +132,61 @@ fun MusicContent(
         }
     }
 
-    Scaffold(
-        modifier = Modifier.padding(innerPaddingValues)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPaddingValues)
+            .padding(16.dp)
+            .verticalScroll(scrollState),
+
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        LottieAnimation(
+            composition = composition,
+            progress = {
+                if (progress > 0f && isPlaying) progressAnimation
+                else progress * 1000
+            }
+        )
 
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
 
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-
-                IconButton(
-                    onClick = {
+            IconButton(
+                onClick = {
+                    if (!isPlaying) {
                         musicService?.startMusic()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                    )
-                }
-
-                IconButton(
-                    onClick = {
+                    } else {
                         musicService?.stopMusic()
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.StopCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                    )
+                    isPlaying = !isPlaying
                 }
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Default.PauseCircle else Icons.Default.PlayCircle,
+                    contentDescription = null,
+                    modifier = Modifier.size(64.dp),
+                )
             }
+
         }
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.crocusoft_android_components.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,8 +11,11 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.example.crocusoft_android_components.MainActivity
 import com.example.crocusoft_android_components.R
+import com.example.crocusoft_android_components.SecondActivity
 
 
 class MusicService : Service() {
@@ -39,6 +43,8 @@ class MusicService : Service() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
         } else {
@@ -47,7 +53,7 @@ class MusicService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             val name = "Music Channel"
             val descriptionText = "Channel for Music Service"
             val importance = NotificationManager.IMPORTANCE_LOW
@@ -57,7 +63,7 @@ class MusicService : Service() {
             val notificationManager: NotificationManager =
                 getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
+
     }
 
     override fun onBind(intent: Intent?): IBinder {

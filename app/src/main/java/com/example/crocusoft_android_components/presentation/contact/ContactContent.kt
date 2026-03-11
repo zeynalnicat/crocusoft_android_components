@@ -19,7 +19,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.crocusoft_android_components.ui.theme.Primary
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -34,41 +38,52 @@ fun ContactContent(
         postIntent(ContactContract.Intent.FetchContact)
     }
 
-    Scaffold(
-        modifier = Modifier.padding(innerPaddingValues)
-    ) {
+        if(state.contacts.isNotEmpty()){
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxSize()
+                    .padding(innerPaddingValues).padding(16.dp),
+            ) {
+                items(
+                    count = state.contacts.size,
+                    key = {state.contacts[it].id}
+                ){
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color.Cyan,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.padding(16.dp).fillMaxWidth()
+                        ){
+                            Text(
+                                text = state.contacts[it].name,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(
-                count = state.contacts.size,
-                key = {state.contacts[it].id}
-            ){
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color.Magenta,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.padding(16.dp).fillMaxWidth()
-                    ){
-                        Text(
-                            text = state.contacts[it].name,
-                            color = Color.White
-                        )
+                            )
 
-                        Text(
-                            text = state.contacts[it].number,
-                            color = Color.White
-                        )
+                            Text(
+                                text = state.contacts[it].number,
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
         }
-    }
+        else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                Text("No contacts found", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+            }
+        }
+
+
 
 }

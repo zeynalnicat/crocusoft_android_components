@@ -2,6 +2,7 @@ package com.example.crocusoft_android_components.presentation.contact
 
 import android.content.ContentResolver
 import android.provider.ContactsContract
+import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import com.example.crocusoft_android_components.domain.ContactModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,7 @@ class ContactViewModel @Inject constructor(val contentResolver: ContentResolver)
         val projection = arrayOf(
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
         )
 
         contentResolver.query(
