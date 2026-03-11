@@ -53,6 +53,8 @@ fun HomeContent(
                     focusedIndicatorColor = Color.Transparent,
                     focusedPlaceholderColor = Color.White.copy(alpha = 0.8f),
                     unfocusedContainerColor = Color.DarkGray,
+                    focusedLabelColor = Color.Black,
+                    unfocusedLabelColor = Color.Black ,
                     unfocusedTextColor = Color.Black,
                     unfocusedIndicatorColor = Color.Transparent
                 )
