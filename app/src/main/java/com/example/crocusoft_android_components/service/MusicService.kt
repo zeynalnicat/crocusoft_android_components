@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.MediaPlayer
+import android.net.rtp.AudioStream
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -71,6 +72,7 @@ class MusicService : Service() {
     }
 
     fun startMusic() {
+        player.setVolume(1f,1f)
         player.start()
     }
 
