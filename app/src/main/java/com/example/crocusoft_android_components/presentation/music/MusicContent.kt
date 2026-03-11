@@ -1,11 +1,14 @@
 package com.example.crocusoft_android_components.presentation.music
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.graphics.drawable.Icon
+import android.os.BatteryManager
 import android.os.IBinder
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.registerReceiver
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -49,6 +53,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.crocusoft_android_components.R
 import com.example.crocusoft_android_components.service.MusicService
+import com.example.crocusoft_android_components.utils.BatteryBroadcastReceiver
 import kotlinx.coroutines.delay
 
 
@@ -64,6 +69,8 @@ fun MusicContent(
         composition = composition,
         iterations = LottieConstants.IterateForever
     )
+
+    var showAnimation by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -93,7 +100,20 @@ fun MusicContent(
         }
     }
 
+
+
+
     LaunchedEffect(Unit) {
+
+        val batteryIntent =
+            context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+
+        val level = batteryIntent?.getIntExtra(BatteryManager.EXTRA_LEVEL,-1)?:-1
+        val scale = batteryIntent?.getIntExtra(BatteryManager.EXTRA_SCALE,-1)?:-1
+
+        val batterPct = level*100 / scale.toFloat()
+
+        showAnimation = batterPct>20
 
         val intent = Intent(context, MusicService::class.java)
 
@@ -107,6 +127,18 @@ fun MusicContent(
     }
 
     DisposableEffect(Unit) {
+
+        val receiver = BatteryBroadcastReceiver(
+            onBatteryOkay = { showAnimation = true },
+            onLowBattery = { showAnimation = false }
+        )
+
+        val intentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_BATTERY_LOW)
+            addAction(Intent.ACTION_BATTERY_OKAY)
+        }
+        context.registerReceiver(receiver, intentFilter)
+
         onDispose {
             if (isBound) {
                 context.unbindService(connection)
@@ -146,8 +178,8 @@ fun MusicContent(
         LottieAnimation(
             composition = composition,
             progress = {
-                if (progress > 0f && isPlaying) progressAnimation
-                else progress * 1000
+                if (progress > 0f && isPlaying && showAnimation) progressAnimation
+                else 0f
             }
         )
 

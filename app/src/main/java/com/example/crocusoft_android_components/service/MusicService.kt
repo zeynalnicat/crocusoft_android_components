@@ -82,6 +82,10 @@ class MusicService : Service() {
         return player.currentPosition
     }
 
+    fun isPlaying(): Boolean{
+        return player.isPlaying
+    }
+
     fun getDuration(): Int {
         return player.duration
     }

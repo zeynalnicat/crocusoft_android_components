@@ -2,6 +2,7 @@ package com.example.crocusoft_android_components.core
 
 import android.content.ContentResolver
 import android.content.Context
+import com.example.crocusoft_android_components.utils.BatteryBroadcastReceiver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,4 +19,6 @@ object AppModule {
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
         return context.contentResolver
     }
+
+
 }

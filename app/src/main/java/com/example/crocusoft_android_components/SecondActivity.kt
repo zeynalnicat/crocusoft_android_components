@@ -1,5 +1,7 @@
 package com.example.crocusoft_android_components
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,12 +13,18 @@ import androidx.compose.ui.graphics.Color
 import com.example.crocusoft_android_components.navigation.MainHost
 import com.example.crocusoft_android_components.ui.theme.Primary
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class SecondActivity : ComponentActivity() {
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             Scaffold(modifier = Modifier.fillMaxSize(),
@@ -33,4 +41,6 @@ class SecondActivity : ComponentActivity() {
 
 
     }
+
+
 }
