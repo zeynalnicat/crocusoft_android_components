@@ -29,14 +29,13 @@ class MusicService : Service() {
         }
     }
 
+
     private val binder = MusicBinder()
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        createNotificationChannel()
 
-        player = MediaPlayer.create(this, R.raw.sample)
+
         val notification = NotificationCompat.Builder(this, "music")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Music Player")
@@ -51,6 +50,14 @@ class MusicService : Service() {
         } else {
             startForeground(1, notification)
         }
+        return START_STICKY
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+        player = MediaPlayer.create(this, R.raw.sample)
+
     }
 
     private fun createNotificationChannel() {
